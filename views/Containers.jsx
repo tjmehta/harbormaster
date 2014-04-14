@@ -6,12 +6,11 @@ var React = require('react');
 var ReactAsync = require('react-async');
 var ReactRouter = require('react-router-component');
 var Link  = ReactRouter.Link;
-var docker = require('docker');
-var asyncMap = require('asyncMap');
+var docker = require('../lib/docker');
+var asyncMap = require('../lib/asyncMap');
 var createCount = require('callback-count');
-var Nav = require('./Nav');
+var Nav = require('./Nav.jsx');
 
-var asyncMap = require('asyncMap');
 var put = function (key) {
   return function (val) {
     var obj = {};
@@ -22,7 +21,7 @@ var put = function (key) {
 var putArgs = function (key, cb) {
   return function (err, val) {
     cb(err, put(key)(val));
-  }
+  };
 };
 
 
@@ -33,11 +32,8 @@ module.exports = React.createClass({
     docker.listContainers(putArgs('containers', cb));
   },
 
-  getInitialStateAsync: function(cb) {
-    this.getContainers(cb);
-  },
-
   componentWillReceiveProps: function(nextProps) {
+    debugger;
     this.getContainers(function (err, results) {
       if (err) {
         throw err;
@@ -49,7 +45,7 @@ module.exports = React.createClass({
   },
 
   render: function() {
-    var containers = this.props.asyncState.containers;
+    var containers = this.state.containers;
     return (
       <div>
         <Nav></Nav>
@@ -66,6 +62,7 @@ module.exports = React.createClass({
                 <th>Created</th>
                 <th>Status</th>
                 <th>Ports</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -78,13 +75,25 @@ module.exports = React.createClass({
   },
 
   containerRow: function (container) {
-    return <tr key={ container.Id}>
-      <td>{ container.Id.slice(0, 12) }</td>
-      <td>{ container.Image }</td>
-      <td>{ container.Command }</td>
-      <td>{ container.Created }</td>
-      <td>{ container.Status }</td>
-      <td>{ JSON.stringify(container.Ports) }</td>
+    var shortId = container.Id.slice(0, 12);
+    return <tr key={ container.Id }>
+        <td>{ shortId }</td>
+        <td>{ container.Image }</td>
+        <td>{ container.Command }</td>
+        <td>{ container.Created }</td>
+        <td>{ container.Status }</td>
+        <td>{ JSON.stringify(container.Ports) }</td>
+        <td>
+          <span onClick={ this.openContainerModal.bind(this, shortId) }>Inspect</span>
+        </td>
     </tr>
+  },
+
+  componentDidMount: function () {
+
+  },
+
+  openContainerModal: function (shortId) {
+
   }
 });

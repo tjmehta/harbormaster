@@ -6,12 +6,12 @@ var React = require('react');
 var ReactAsync = require('react-async');
 var ReactRouter = require('react-router-component');
 var Link  = ReactRouter.Link;
-var docker = require('docker');
+var docker = require('../lib/docker');
+var asyncMap = require('../lib/asyncMap');
 var createCount = require('callback-count');
 var last = require('101/last');
-var Nav = require('./Nav');
+var Nav = require('./Nav.jsx');
 
-var asyncMap = require('asyncMap');
 var put = function (key) {
   return function (val) {
     var obj = {};
@@ -22,7 +22,7 @@ var put = function (key) {
 var putArgs = function (key, cb) {
   return function (err, val) {
     cb(err, put(key)(val));
-  }
+  };
 };
 
 
@@ -50,7 +50,7 @@ module.exports = React.createClass({
   },
 
   render: function () {
-    var images = this.props.asyncState.images;
+    var images = this.state.images;
     return (
       <div>
         <Nav></Nav>

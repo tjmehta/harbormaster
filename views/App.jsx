@@ -26,9 +26,11 @@ module.exports = React.createClass({
           <link rel="stylesheet" href="/assets/style.css" />
         </head>
         <Pages className="App" path={this.props.path}>
-          <Page path="/"           handler={Home} />
-          <Page path="/containers" handler={Containers} />
-          <Page path="/images"     handler={Images} />
+          <Page path="/"                        handler={Home} />
+          <Page path="/containers"              handler={Containers} />
+          <Page path="/containers/:containerId" handler={Containers} />
+          <Page path="/images"                  handler={Images} />
+          <Page path="/images/:imageId"         handler={Images} />
         </Pages>
       </html>
     );
