@@ -1,0 +1,52 @@
+{
+  "name": "harbormaster",
+  "version": "0.0.0",
+  "description": "docker ui, master of docks and controller of containers",
+  "main": "./server.js",
+  "browser": "./client.js",
+  "browserify": {
+    "transform": [
+      [
+        "reactify",
+        {
+          "harmony": true
+        }
+      ]
+    ]
+  },
+  "dependencies": {
+    "react": "~0.10.0",
+    "react-async": "~0.8.0",
+    "react-router-component": "~0.18.0",
+    "koa": "^0.5.2",
+    "koa-compress": "^1.0.4",
+    "koa-response-time": "^1.0.2",
+    "koa-mount": "^1.2.5",
+    "koa-session-redis": "^1.1.0-rc3",
+    "koa-static": "^1.4.3",
+    "superagent": "~0.17.0",
+    "fibers": "~1.0.1",
+    "node-jsx": "~0.10.0",
+    "function-proxy": "~0.5.1",
+    "dockerode": "~1.2.10",
+    "callback-count": "~0.1.0",
+    "bind-right": "~0.5.0"
+  },
+  "devDependencies": {
+    "reactify": "~0.10.0",
+    "envify": "~1.2.0",
+    "browserify": "~3.32.1",
+    "connect-browserify": "~2.0.1",
+    "uglify-js": "~2.4.13",
+    "supervisor": "~0.5.7"
+  },
+  "scripts": {
+    "test": "NODE_LIB=./lib mocha",
+    "watch": "NODE_LIB=./lib supervisor --harmony -n -i node_modules -e js,jsx server.js",
+    "build": "NODE_LIB=./lib NODE_ENV=production browserify ./ | uglifyjs -cm 2>/dev/null > ./assets/bundle.js",
+    "start": "NODE_LIB=./lib NODE_ENV=production node --harmony server.js",
+    "clean": "rm -f ./assets/bundle.js"
+  },
+  "author": "",
+  "license": "MIT"
+}
