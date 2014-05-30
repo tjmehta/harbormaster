@@ -39,14 +39,15 @@ module.exports = React.createClass({
   },
 
   componentWillReceiveProps: function(nextProps) {
-    this.getImages(function (err, results) {
+    debugger;
+    this.getImages(function (err, state) {
       if (err) {
         throw err;
       }
       else {
-        this.setState(results);
+        this.setState(state);
       }
-    });
+    }.bind(this));
   },
 
   render: function () {

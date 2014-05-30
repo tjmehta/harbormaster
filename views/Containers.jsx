@@ -10,6 +10,7 @@ var docker = require('../lib/docker');
 var asyncMap = require('../lib/asyncMap');
 var createCount = require('callback-count');
 var Nav = require('./Nav.jsx');
+var ContainerModal = require('./ContainerModal.jsx');
 
 var put = function (key) {
   return function (val) {
@@ -28,20 +29,24 @@ var putArgs = function (key, cb) {
 module.exports = React.createClass({
   mixins: [ReactAsync.Mixin],
 
-  getContainers: function(cb) {
+  getContainers: function (cb) {
     docker.listContainers(putArgs('containers', cb));
+  },
+
+  getInitialStateAsync: function (cb) {
+    this.getContainers(cb);
   },
 
   componentWillReceiveProps: function(nextProps) {
     debugger;
-    this.getContainers(function (err, results) {
+    this.getContainers(function (err, state) {
       if (err) {
         throw err;
       }
       else {
-        this.setState(results);
+        this.setState(state);
       }
-    });
+    }.bind(this));
   },
 
   render: function() {
@@ -69,6 +74,7 @@ module.exports = React.createClass({
               { containers.map(this.containerRow) }
             </tbody>
           </table>
+          <div id="modal-container"></div>
         </div>
       </div>
     );
@@ -77,15 +83,17 @@ module.exports = React.createClass({
   containerRow: function (container) {
     var shortId = container.Id.slice(0, 12);
     return <tr key={ container.Id }>
-        <td>{ shortId }</td>
-        <td>{ container.Image }</td>
-        <td>{ container.Command }</td>
-        <td>{ container.Created }</td>
-        <td>{ container.Status }</td>
-        <td>{ JSON.stringify(container.Ports) }</td>
-        <td>
-          <span onClick={ this.openContainerModal.bind(this, shortId) }>Inspect</span>
-        </td>
+      <td>{ shortId }</td>
+      <td>{ container.Image }</td>
+      <td>{ container.Command }</td>
+      <td>{ container.Created }</td>
+      <td>{ container.Status }</td>
+      <td>{ JSON.stringify(container.Ports) }</td>
+      <td>
+        <span onClick={ this.openContainerModal.bind(this, container) }>
+          Inspect
+        </span>
+      </td>
     </tr>
   },
 
@@ -93,7 +101,14 @@ module.exports = React.createClass({
 
   },
 
-  openContainerModal: function (shortId) {
-
+  openContainerModal: function (container) {
+    var $modalContainer = document.getElementById('modal-container');
+    var containerModal = ContainerModal({ container: container });
+    React.renderComponent(containerModal, $modalContainer, function () {
+      debugger;
+      if (containerModal.isMounted()) {
+        containerModal.show()
+      }
+    });
   }
 });

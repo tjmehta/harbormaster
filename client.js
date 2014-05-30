@@ -9,5 +9,5 @@ if (typeof window !== 'undefined') {
     if (name === 'react') {
       return React;
     }
-  }
+  };
 }
